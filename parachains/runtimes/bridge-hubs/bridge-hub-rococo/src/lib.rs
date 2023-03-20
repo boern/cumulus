@@ -963,6 +963,11 @@ impl_runtime_apis! {
 				fn unlockable_asset() -> Result<(MultiLocation, MultiLocation, MultiAsset), BenchmarkError> {
 					Err(BenchmarkError::Skip)
 				}
+
+				fn bridged_destination() -> Result<(NetworkId, InteriorMultiLocation), BenchmarkError> {
+					// TODO - don't skip
+					Err(BenchmarkError::Skip)
+				}
 			}
 
 			type XcmBalances = pallet_xcm_benchmarks::fungible::Pallet::<Runtime>;
