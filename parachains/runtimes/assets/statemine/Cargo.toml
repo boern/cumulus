@@ -78,7 +78,7 @@ ibc-support = { git = "https://github.com/octopus-network/substrate-ibc.git",   
 # local dev
 # pallet-ibc = { path = "../../../../../octopus/substrate-ibc/core",  default-features = false }
 # pallet-ics20-transfer = { path = "../../../../../octopus/substrate-ibc/app/ics20-transfer",  default-features = false }
-# ibc-support = { path = "../../../../../octopus/substrate-ibc/ibc-support",  default-features = false }
+# ibc-support = { path = "../../../../../octopus/substrate-ibc/support",  default-features = false }
 
 [dev-dependencies]
 asset-test-utils = { path = "../test-utils"}
