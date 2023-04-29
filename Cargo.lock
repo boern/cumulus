@@ -6544,6 +6544,7 @@ name = "pallet-ics20-transfer"
 version = "4.0.0-dev"
 source = "git+https://github.com/octopus-network/substrate-ibc.git?branch=polkadot-v0.9.38#2a6eb364a791b799fe7d3475e6cd2710ee3df4cb"
 dependencies = [
+ "frame-benchmarking",
  "frame-support",
  "frame-system",
  "hex",
