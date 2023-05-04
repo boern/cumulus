@@ -592,13 +592,18 @@ impl pallet_uniques::Config for Runtime {
 
 parameter_types! {
 	pub const ExpectedBlockTime: u64 = MILLISECS_PER_BLOCK;
+	pub const ChainVersion: u64 = 0;
 }
+
+use ibc_support::module::DefaultRouter;
 
 impl pallet_ibc::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
 	type TimeProvider = pallet_timestamp::Pallet<Runtime>;
 	type ExpectedBlockTime = ExpectedBlockTime;
 	const IBC_COMMITMENT_PREFIX: &'static [u8] = b"Ibc";
+	type ChainVersion = ChainVersion;
+	type IbcModule = DefaultRouter;
 	type WeightInfo = ();
 }
 

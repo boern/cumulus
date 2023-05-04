@@ -5,7 +5,7 @@ timeout = 600
 
 [relaychain]
 default_command = "polkadot"
-default_args = [ 
+default_args = [
         "-lparachain=debug",
         "-lbeefy=debug",
         "--beefy",
@@ -28,17 +28,17 @@ chain = "rococo-local"
 	name = "bob"
 	validator = true
 
-	[[relaychain.nodes]]
-	name = "charlie"
-	validator = true
+	# [[relaychain.nodes]]
+	# name = "charlie"
+	# validator = true
 
-	[[relaychain.nodes]]
-	name = "dave"
-	validator = true
+	# [[relaychain.nodes]]
+	# name = "dave"
+	# validator = true
 
-	[[relaychain.nodes]]
-	name = "eve"
-	validator = true
+	# [[relaychain.nodes]]
+	# name = "eve"
+	# validator = true
 
 [[parachains]]
 id = 2222
@@ -63,11 +63,11 @@ cumulus_based = true
     name = "RUST_LOG"
     value = "runtime=debug,parachain=trace,cumulus-collator=trace,aura=trace,xcm=trace"
 
-	# run Boern as parachain collator
-	[[parachains.collators]]
-    command = "polkadot-parachain"
-	name = "Boern"
-	validator = true
-    [[parachains.collators.env]]
-    name = "RUST_LOG"
-    value = "runtime=debug,parachain=trace,cumulus-collator=trace,aura=trace,xcm=trace"
+	# # run Boern as parachain collator
+	# [[parachains.collators]]
+ #    command = "polkadot-parachain"
+	# name = "Boern"
+	# validator = true
+ #    [[parachains.collators.env]]
+ #    name = "RUST_LOG"
+ #    value = "runtime=debug,parachain=trace,cumulus-collator=trace,aura=trace,xcm=trace"
