@@ -10,7 +10,9 @@ default_args = [
         "-lbeefy=debug",
         "--beefy",
         "--enable-offchain-indexing=true",
-		 "--detailed-log-output"
+		 "--detailed-log-output",
+		"-lpallet_ibc=trace",
+		"-lpallet-ics20-transfer=trace"
         ]
 chain = "rococo-local"
 
@@ -23,6 +25,9 @@ chain = "rococo-local"
         "--rpc-external",
         "--ws-external",
         ]
+	[[relaychain.nodes.env]]
+    name = "RUST_LOG"
+    value = "pallet_ibc=trace,runtime::pallet-ics20-transfer=trace"
 
 	[[relaychain.nodes]]
 	name = "bob"

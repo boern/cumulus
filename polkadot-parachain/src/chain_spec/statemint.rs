@@ -431,6 +431,10 @@ fn statemine_genesis(
 		polkadot_xcm: statemine_runtime::PolkadotXcmConfig {
 			safe_xcm_version: Some(SAFE_XCM_VERSION),
 		},
+		// ics_20_transfer: Default::default(),
+		ics_20_transfer: statemine_runtime::Ics20TransferConfig {
+			asset_id_by_name: vec![("ERT".to_string(), 666), ("MRT".to_string(), 888)],
+		},
 	}
 }
 

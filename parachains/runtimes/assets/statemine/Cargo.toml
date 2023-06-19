@@ -196,4 +196,6 @@ std = [
 	"parachain-info/std",
 	"parachains-common/std",
 	"pallet-ibc/std",
+	"pallet-ics20-transfer/std",
+	"ibc-support/std",
 ]

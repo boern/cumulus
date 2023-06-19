@@ -76,6 +76,7 @@ use xcm::latest::BodyId;
 use xcm_executor::XcmExecutor;
 
 use weights::{BlockExecutionWeight, ExtrinsicBaseWeight, RocksDbWeight};
+use frame_support::sp_io::storage;
 
 impl_opaque_keys! {
 	pub struct SessionKeys {
@@ -230,6 +231,20 @@ parameter_types! {
 pub type AssetsForceOrigin =
 	EitherOfDiverse<EnsureRoot<AccountId>, EnsureXcm<IsMajorityOfBody<KsmLocation, ExecutiveBody>>>;
 
+use pallet_assets::AssetsCallback;
+pub struct AssetsCallbackHandle;
+	impl AssetsCallback<AssetIdForTrustBackedAssets, AccountId> for AssetsCallbackHandle {
+		fn created(_id: &AssetIdForTrustBackedAssets, _owner: &AccountId){
+			storage::set(b"asset_created", &().encode());
+			
+		}
+	
+		fn destroyed(_id: &AssetIdForTrustBackedAssets){
+			storage::set(b"asset_destroyed", &().encode());
+			
+		}
+	}
+	
 // Called "Trust Backed" assets because these are generally registered by some account, and users of
 // the asset assume it has some claimed backing. The pallet is called `Assets` in
 // `construct_runtime` to avoid breaking changes on storage reads.
@@ -251,7 +266,8 @@ impl pallet_assets::Config<TrustBackedAssetsInstance> for Runtime {
 	type Freezer = ();
 	type Extra = ();
 	type WeightInfo = weights::pallet_assets::WeightInfo<Runtime>;
-	type CallbackHandle = ();
+	// type CallbackHandle = ();
+	type CallbackHandle = AssetsCallbackHandle;
 	type AssetAccountDeposit = AssetAccountDeposit;
 	type RemoveItemsLimit = frame_support::traits::ConstU32<1000>;
 	#[cfg(feature = "runtime-benchmarks")]
@@ -595,7 +611,22 @@ parameter_types! {
 	pub const ChainVersion: u64 = 0;
 }
 
-use ibc_support::module::DefaultRouter;
+use ibc_support::module::Router;
+pub struct IbcModule;
+
+impl ibc_support::module::AddModule for IbcModule {
+	fn add_module(router: Router) -> Router {
+		match router.clone().add_route(
+			"transfer".parse().expect("never failed"),
+			pallet_ics20_transfer::callback::IbcTransferModule::<Runtime>(
+				sp_std::marker::PhantomData::<Runtime>,
+			),
+		) {
+			Ok(ret) => ret,
+			Err(e) => panic!("add module failed by {}", e),
+		}
+	}
+}
 
 impl pallet_ibc::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
@@ -603,9 +634,23 @@ impl pallet_ibc::Config for Runtime {
 	type ExpectedBlockTime = ExpectedBlockTime;
 	const IBC_COMMITMENT_PREFIX: &'static [u8] = b"Ibc";
 	type ChainVersion = ChainVersion;
-	type IbcModule = DefaultRouter;
+	type IbcModule = IbcModule;
 	type WeightInfo = ();
 }
+
+// pub type AssetBalance = u128;
+impl pallet_ics20_transfer::Config for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+	type Currency = Balances;
+	type AssetId = u32;
+	type AssetBalance = Balance;
+	type Fungibles = Assets;
+	type AssetIdByName = Ics20Transfer;
+	type AccountIdConversion = pallet_ics20_transfer::impls::IbcAccount;
+	type IbcContext = pallet_ibc::context::Context<Runtime>;
+	const NATIVE_TOKEN_NAME: &'static [u8] = b"KSM";
+}
+
 
 // Create the runtime by composing the FRAME pallets that were previously configured.
 construct_runtime!(
@@ -655,6 +700,7 @@ construct_runtime!(
 
 		//ibc
 		Ibc: pallet_ibc,
+		Ics20Transfer: pallet_ics20_transfer,
 	}
 );
 
